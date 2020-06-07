@@ -14,7 +14,7 @@ document.querySelector("#score-1").textContent = 0;
 document.querySelector("#current-0").textContent = 0;
 document.querySelector("#current-1").textContent = 0;
 */
-// getElemenById нь ДОМ-с зөвхөн ID -аар хайдаг учир маш хурдан ажилладаг
+// getElemenById нь ДОМ-с зөвхөн ID -аар хайдаг учир маш хурдан ажилладаг.Ингээд програм эхлэхэд бэлтгэе.
 document.getElementById("score-0").textContent = 0;
 document.getElementById("score-1").textContent = 0;
 document.getElementById("current-0").textContent = 0;
@@ -31,4 +31,26 @@ document.querySelector(".btn-roll").addEventListener(click, function() {
   // Шоог орхиж эхлэх үед санамсаргүй буусан шооны тоотой зурагыг харуулна.
   DiceDom.style.display = "block";
   DiceDom.src = "dice-" + diceNumber + ".png";
+
+  // Буусан тоо нь 1-с ялгаатай бол  идэвхитэй тоглогчийн цуглуулсан оноог нэмэгдүүлнэ.
+  if (diceNumber !== 1) {
+    roundScore = roundScore + diceNumber;
+    document.getElementById("current-" + activePlayer).textContent = roundScore;
+    // document.querySelector('.btn-hold').addEventListener(click,);
+  } else {
+    // 1 буусан тул тоглогчийн ээлжийг энд сольж өгнө
+    // энэ тоглогчийн ээлжиндээ цуглуулсан оноог 0 болгоно.
+    roundScore = 0;
+    document.getElementById("current-" + activePlayer).textContent = 0;
+    // Тоглогчийн ээлжийг нөгөө тоглогчид шилжүүлнэ.
+    // Хэрэв идэвхитэй тоглогч нь 0 байвал идэвхитэй тоглогчийг 1 болгоно.
+    // Үгүй бол идэвхитэй тоглогчийг 0 болгоно.
+    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+    // Улаан цэгийг идэвхитэй тоглогчид шилжүүлэх
+    document
+      .querySelector(".player-" + activePlayer + "-panel")
+      .classList.toggle("active");
+  }
+  // Тоглогчийн ээлж солигдоход шоог түр алга болгоно.
+  DiceDom.style.display = "none";
 });
