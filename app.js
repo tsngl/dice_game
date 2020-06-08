@@ -1,28 +1,51 @@
-// Тоглогчийн ээлжийг хадгалах хувьсагч, 1-р тоглогч 0, 2-р тоглогчийг 1 гэж тэмдэглэе.
-var activePlayer = 0;
-//Тоглогчдын цуглуулсан оноог хадгалах хувьсагч
-var scores = [0, 0];
-//Тоглогчийн ээлжиндээ цуглуулж байгаа оноог хадгалах хувьсагч
-var roundScore = 0;
+//Програмд ашиглагдах глобаль хувьсагчидыг энд зарлая
+//Аль тоглогч шоо шидэх вэ гэдгийг энд хадгална
+var activePlayer;
 
-// Програм эхлэхэд бэлтгэе
-/* querySelector нь ДОМ-с ID болон Класс ... бүгдэнгээс нь хайдаг учир удаан ажиллагаатай
+//2 тоглогчийн цуглуулсан оноонууд
+var scores;
 
-document.querySelector("#score-0").textContent = 0;
-document.querySelector("#score-1").textContent = 0;
+//Идэвхитэй тоглогчийн цуглуулж байгаа ээлжийн оноо
+var roundScore;
 
-document.querySelector("#current-0").textContent = 0;
-document.querySelector("#current-1").textContent = 0;
-*/
-// getElemenById нь ДОМ-с зөвхөн ID -аар хайдаг учир маш хурдан ажилладаг.Ингээд програм эхлэхэд бэлтгэе.
-document.getElementById("score-0").textContent = 0;
-document.getElementById("score-1").textContent = 0;
-document.getElementById("current-0").textContent = 0;
-document.getElementById("current-1").textContent = 0;
-
-//Програм ажиллаж эхлэхэд шооны зураг огт байхгүй буюу шоо орхиогүй байх тул зураггүй байна. Мөн dice классыг олон дахин хайхын оронд нэг удаа хайж олоод түүнийгээ хувьсагчид агуулсанаар програм маань маш цэгцтэй болж өгнө.
+//Шооны зургийг үзүүлэх элемэтнийг ДОМ-с хайж олоод энд хадгална
 var DiceDom = document.querySelector(".dice");
-DiceDom.style.display = "none";
+
+// Тоглоомыг эхлүүлнэ.
+initGame();
+
+// Тоглоомыг шинээр эхлэхэд бэлтгэнэ.
+function initGame() {
+  // Тоглогчийн ээлжийг хадгалах хувьсагч, 1-р тоглогч 0, 2-р тоглогчийг 1 гэж тэмдэглэе.
+  activePlayer = 0;
+
+  //Тоглогчдын цуглуулсан оноог хадгалах хувьсагч
+  scores = [0, 0];
+
+  //Тоглогчийн ээлжиндээ цуглуулж байгаа оноог хадгалах хувьсагч
+  roundScore = 0;
+
+  // getElemenById нь ДОМ-с зөвхөн ID -аар хайдаг учир маш хурдан ажилладаг.Ингээд програм эхлэхэд бэлтгэе.
+  document.getElementById("score-0").textContent = 0;
+  document.getElementById("score-1").textContent = 0;
+  document.getElementById("current-0").textContent = 0;
+  document.getElementById("current-1").textContent = 0;
+
+  // Тоглогчидын нэрийг буцааж гаргах
+  document.getElementById("name-0").textContent = "Player 1";
+  document.getElementById("name-1").textContent = "Player 2";
+
+  document.querySelector(".player-0-panel").classList.remove("winner");
+  document.querySelector(".player-1-panel").classList.remove("winner");
+
+  document.querySelector(".player-0-panel").classList.remove("active");
+  document.querySelector(".player-1-panel").classList.remove("active");
+
+  document.querySelector(".player-0-panel").classList.add("active");
+
+  // Тоглоом эхлэхэд шооны зураг дэлгэцэнд харагдахгүй байх ёстой.
+  DiceDom.style.display = "none";
+}
 
 // ROLL DICE эвент листэнэр. Энэ нь зөвхөн нэг л газар ашиглагдах тул anomymous функцийг ашиглах болно.
 document.querySelector(".btn-roll").addEventListener("click", function() {
@@ -52,7 +75,7 @@ document.querySelector(".btn-hold").addEventListener("click", function() {
     scores[activePlayer];
 
   //Уг тоглогчийг хожсон эсэхийг шалгах (оноо нь 100-с их буюу тэнцүү байх)
-  if (scores[activePlayer] >= 100) {
+  if (scores[activePlayer] >= 10) {
     // Ялагч гэсэн тэкстийг нэрнийх нь оронд гаргана.
     document.getElementById("name-" + activePlayer).textContent = "WINNER!!!";
     document
@@ -83,3 +106,6 @@ function switchToNextPlayer() {
   // Тоглогчийн ээлж солигдоход шоог түр алга болгоно.
   DiceDom.style.display = "none";
 }
+
+//New Game буюу Шинэ тоглоом эхлүүлэх товчны эвент листенер
+document.querySelector(".btn-new").addEventListener("click", initGame);
