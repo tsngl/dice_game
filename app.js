@@ -1,5 +1,5 @@
 // Тоглогчийн ээлжийг хадгалах хувьсагч, 1-р тоглогч 0, 2-р тоглогчийг 1 гэж тэмдэглэе.
-var activePlayer = 1;
+var activePlayer = 0;
 //Тоглогчдын цуглуулсан оноог хадгалах хувьсагч
 var scores = [0, 0];
 //Тоглогчийн ээлжиндээ цуглуулж байгаа оноог хадгалах хувьсагч
@@ -24,10 +24,11 @@ document.getElementById("current-1").textContent = 0;
 var DiceDom = document.querySelector(".dice");
 DiceDom.style.display = "none";
 
-// Roll Dice дарахад шоо санамсаргүй бууна. Энэ нь зөвхөн нэг л газар ашиглагдах тул anomymous функцийг ашиглах болно.
-document.querySelector(".btn-roll").addEventListener(click, function() {
+// ROLL DICE эвент листэнэр. Энэ нь зөвхөн нэг л газар ашиглагдах тул anomymous функцийг ашиглах болно.
+document.querySelector(".btn-roll").addEventListener("click", function() {
   //Шооны аль талаараа буусныг хадгалах хувьсагч хэрэгтэй. 1-6 гэсэн утгыг энэ хувьсагчид санамсаргүй үүсгэж өгнө.
   var diceNumber = Math.floor(Math.random() * 6) + 1;
+
   // Шоог орхиж эхлэх үед санамсаргүй буусан шооны тоотой зурагыг харуулна.
   DiceDom.style.display = "block";
   DiceDom.src = "dice-" + diceNumber + ".png";
@@ -36,21 +37,49 @@ document.querySelector(".btn-roll").addEventListener(click, function() {
   if (diceNumber !== 1) {
     roundScore = roundScore + diceNumber;
     document.getElementById("current-" + activePlayer).textContent = roundScore;
-    // document.querySelector('.btn-hold').addEventListener(click,);
   } else {
-    // 1 буусан тул тоглогчийн ээлжийг энд сольж өгнө
-    // энэ тоглогчийн ээлжиндээ цуглуулсан оноог 0 болгоно.
-    roundScore = 0;
-    document.getElementById("current-" + activePlayer).textContent = 0;
-    // Тоглогчийн ээлжийг нөгөө тоглогчид шилжүүлнэ.
-    // Хэрэв идэвхитэй тоглогч нь 0 байвал идэвхитэй тоглогчийг 1 болгоно.
-    // Үгүй бол идэвхитэй тоглогчийг 0 болгоно.
-    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
-    // Улаан цэгийг идэвхитэй тоглогчид шилжүүлэх
+    //1 буусан тул тоглогчийн ээлжийг солино.
+    switchToNextPlayer();
+  }
+});
+// HOLD эвент листэнэр.
+document.querySelector(".btn-hold").addEventListener("click", function() {
+  // Уг тоглогчийн цуглуулсан ээлжний оноог глобаль оноо нь дээр нь нэмж өгнө
+  scores[activePlayer] = scores[activePlayer] + roundScore;
+
+  //Дэлгэц дээр оноог нь өөрчлөн харуулна.
+  document.getElementById("score-" + activePlayer).textContent =
+    scores[activePlayer];
+
+  //Уг тоглогчийг хожсон эсэхийг шалгах (оноо нь 100-с их буюу тэнцүү байх)
+  if (scores[activePlayer] >= 100) {
+    // Ялагч гэсэн тэкстийг нэрнийх нь оронд гаргана.
+    document.getElementById("name-" + activePlayer).textContent = "WINNER!!!";
     document
       .querySelector(".player-" + activePlayer + "-panel")
-      .classList.toggle("active");
+      .classList.add("winner");
+    document
+      .querySelector(".player-" + activePlayer + "-panel")
+      .classList.remove("active");
+  } else {
+    // Тоглогчийн ээлжийг солино.
+    switchToNextPlayer();
   }
+});
+
+// Энэ функц нь тоглогчийн ээлжийг дараачийн тоглогч руу шилжүүлнэ
+function switchToNextPlayer() {
+  // Энэ тоглогчийн ээлжиндээ цуглуулсан оноог 0 болгоно.
+  roundScore = 0;
+  document.getElementById("current-" + activePlayer).textContent = 0;
+
+  // Тоглогчийн ээлжийг нөгөө тоглогчид шилжүүлнэ.
+  activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+
+  // Улаан цэгийг идэвхитэй тоглогчид шилжүүлэх
+  document.querySelector(".player-0-panel").classList.toggle("active");
+  document.querySelector(".player-1-panel").classList.toggle("active");
+
   // Тоглогчийн ээлж солигдоход шоог түр алга болгоно.
   DiceDom.style.display = "none";
-});
+}
